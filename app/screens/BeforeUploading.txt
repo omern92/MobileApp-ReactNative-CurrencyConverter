@@ -1,0 +1,1 @@
+Make sure that I wrote all the PropTypes in the files.

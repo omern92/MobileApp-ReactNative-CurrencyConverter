@@ -1,0 +1,103 @@
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { 
+  View, Text, Keyboard, Animated, Platform, StyleSheet 
+} from 'react-native';
+
+import styles from './styles';
+
+const ANIMATION_DURATION = 250;
+
+class Logo extends Component {
+  static propTypes = {
+    tintColor: PropTypes.string,
+  };
+  
+  constructor(props) {
+    super(props);
+    
+    this.state = {
+      containerImageWidth: new Animated.Value(styles.$largeContainerSize),
+      imageWidth: new Animated.Value(styles.$largeImageSize),
+    };
+  }
+
+  componentDidMount() {
+    const verb = Platform.OS === 'ios' ? 'Will' : 'Did';
+    
+    this.keyboardShowListener = Keyboard.addListener(`keyboard${verb}Show`, this.keyboardShow);
+    this.keyboardHideListener = Keyboard.addListener(`keyboard${verb}Hide`, this.keyboardHide);
+  }
+
+  componentWillUnmount() {
+    this.keyboardShowListener.remove();
+    this.keyboardHideListener.remove();
+  }
+
+  keyboardShow = () => {
+    const { containerImageWidth, imageWidth } = this.state;
+
+    Animated.parallel([
+      Animated.timing(containerImageWidth, {
+        toValue: styles.$smallContainerSize,
+        duration: ANIMATION_DURATION,
+      }),
+      Animated.timing(imageWidth, {
+        toValue: styles.$smallImageSize,
+        duration: ANIMATION_DURATION,
+      }),
+    ]).start();
+  };
+
+  keyboardHide = () => {
+    const { containerImageWidth, imageWidth } = this.state;
+
+    Animated.parallel([
+      Animated.timing(containerImageWidth, {
+        toValue: styles.$largeContainerSize,
+        duration: ANIMATION_DURATION,
+      }),
+      Animated.timing(imageWidth, {
+        toValue: styles.$largeImageSize,
+        duration: ANIMATION_DURATION,
+      }),
+    ]).start();
+  };
+
+
+  render() {
+    const { containerImageWidth, imageWidth } = this.state;
+
+    const containerImageStyles = [
+      styles.containerImage,
+      { width: containerImageWidth, height: containerImageWidth },
+    ];
+
+    const imageStyles = [
+      styles.logo,
+      { width: imageWidth },
+      this.props.tintColor ? { tintColor: this.props.tintColor } : null,
+    ];
+    
+    return (
+      <View style={styles.container}>
+        <Animated.View style={containerImageStyles}>
+          <Animated.Image
+              resizeMode="contain"
+              style={[StyleSheet.absoluteFill, containerImageStyles]}
+              source={require('./images/background.png')}
+            />
+            <Animated.Image 
+              source={require('./images/logo.png')}
+              style={imageStyles}
+              resizeMode="contain" 
+            />
+          </Animated.View>
+        <Text 
+            style={styles.text}>Currency Converter</Text>
+      </View>
+    );
+  }
+} 
+
+export default Logo;
