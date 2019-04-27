@@ -9,6 +9,6 @@ Changeable theme.
 <br>
 <br>
 <p align="center">
-  <img height=500 width=300 src="MobileAppDemo.gif">
+  <img height=500 width=230 src="MobileAppDemo.gif">
 </p>
 
