@@ -7,14 +7,13 @@ const getLatestRates = (currency) => (
   fetch(`https://fixer.handlebarlabs.com/latest?base=${currency}`)
 );
 
-// Check the settings of the theme so state.currencies.baseCurrency will be in colors.
 const fetchLatestConversionRates = function* (action) {
   try {
     let currency = action.currency;
     if (currency === undefined) {
       currency = yield select(state => state.currencies.baseCurrency);
     }
-    const response = yield getLatestRates(currency);
+    const response = yield call(getLatestRates, currency);
     const result = yield response.json();
 
     if (result.error) {
